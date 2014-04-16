@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+{% block body %}
+	<script type="text/javascript">
+	$(document).ready(function(){
+		var computer = new Speaker();
+
+ 		$(".readable .panel-heading h4 a").on('click', function(e){
+			var $this = $(this).parents("article");
+			//if there was anything in list, just ignore the click:
+			if ($this.parents(".entries").find(".panel-primary").length){
+				return false;
+			}
+			$this.removeClass("panel-default").addClass("panel-primary");
+			
+			var text = $this.find(".panel-heading h4 .content").html();
+			computer.speak(text, function(e) {
+				var text = $this.find(".panel-body").html();
+    			console.log(text);
+				computer.speak(text, function(e) {
+					console.log('Finished in ' + event.elapsedTime + ' seconds.');
+					$this.removeClass("panel-primary").addClass("panel-default");
+					computer.isTalking = false;
+				});	
+			});
+			
+			return false;
+		});
+
+		$(".edit-link").on("click", function(e) {
+		    var $this = $(this), form = $("#empty-form").html();
+
+		    $this.after('<form>' + form + '</form>');
+		});
+ 	});
+ 	</script>
+ 	
+	{% if session.logged_in %}
+	<form id="empty-form" action="{{ url_for('add_entry') }}" method="post">
+		<div class="form-group">
+			<label class="sr-only" for="title">Title</label>
+			<input type="text" name="title" placeholder="Title" class="form-control" />
+		</div>
+		<div class="form-group">
+			<label class="sr-only" for="text">text</label>
+			<textarea name="text" class="form-control" rows="2" cols="40" placeholder="Text"></textarea>
+		</div>
+		<div class="form-group">
+			<button type="submit" class="btn btn-default">Submit</button>
+		</div>
+	</form>
+	{% endif %}
+	<div class="entries">
+	{% for entry in entries %}
+		<article class="panel panel-default readable">
+            <div class="panel-heading">
+				<h4><a href="#" class="glyphicon glyphicon-volume-up"></a>&nbsp;<span class="content">{{ entry.title }}</span></h4>
+            </div>
+			<div class="panel-body">
+                {{ entry.text|safe }}
+            </div>
+            {% if session.logged_in %}
+    			<div class="panel-footer">
+                    <a href="#" class="edit-link" id="edit_id_{{ entry.id }}">edit</a>
+                </div>
+            {% endif %}
+		</article>
+	{% else %}
+		<div class="panel panel-default">
+			<div class="panel-body">
+			Unbelievable!  No entries are here!
+    		</div>
+		</div>
+	{% endfor %}
+	</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+{% block body %}
+<script type="text/javascript">
+ 	$(document).ready(function(){
+		// Toggle browser support messages.
+		if (!('speechSynthesis' in window)) {
+		  $('#synth-support').show();
+		}
+
+		if (!('SpeechRecognition' in window)) {
+		  $('#recog-support').show();
+		}
+ 	});
+ 	
+	/**
+    var recogStatus = document.querySelector('#status');
+    var out = document.querySelector('output');
+    var langSelect = document.querySelector('#lang');
+    var startButton = document.querySelector('button.green');
+    var stopButton = document.querySelector('button.red');
+
+    var justSpoke = false;
+
+    var computer = new Computer(true, out);
+
+    computer.onresult = function(e) {
+      if (e.results.length) {
+        var result = e.results[e.resultIndex];
+        if (result.isFinal) {
+
+          // Protection from spoken response through speakers creating a cycle.
+          if (justSpoke) {
+            justSpoke = false;
+            return;
+          }
+
+          console.log('Speech result: ' + result[0].transcript);
+          this.translate(result[0].transcript);
+        }
+      }
+    };
+
+    computer.onstart = function(e) {
+      recogStatus.textContent = 'listening....';
+      stopButton.disabled = false;
+      startButton.disabled = true;
+      justSpoke = false;
+    };
+
+    computer.onend = function(e) {
+      recogStatus.textContent = '';
+      startButton.disabled = false;
+      stopButton.disabled = true;
+      justSpoke = false;
+    };
+
+    langSelect.addEventListener('change', function(e) {
+      computer.DEST_LANG = e.target.value;
+    });
+
+    startButton.addEventListener('click', function(e) {
+      // e.target.classList.toggle('bold');
+      // stopButton.classList.remove('bold');
+      computer.listen();
+    });
+
+    stopButton.addEventListener('click', function(e) {
+      // e.target.classList.toggle('bold');
+      // startButton.classList.remove('bold');
+      computer.stopListening();
+    });
+
+    document.addEventListener('DOMContentLoaded', function(e) {
+      computer.DEST_LANG = langSelect.value;
+
+      //computer.speak('test this out');
+    });
+    
+    ***/
+</script>
+{% endblock %}

@@ -1,0 +1,17 @@
+.page {
+    margin: 0 auto;
+    width: 400px;
+}
+
+#recog-support,
+#synth-support {
+	display: none;
+}
+
+.glyphicon.red {
+    color: red;
+}
+
+.glyphicon.black {
+    color.black;
+}

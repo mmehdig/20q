@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+{% block body %}
+	<script type="text/javascript">
+	$(document).ready(function(){
+		// Toggle browser support messages.
+		if (!('speechSynthesis' in window)) {
+		  $('#synth-support').show();
+		} else {
+			window.speechSynthesis;
+		}
+		
+		if (!('SpeechRecognition' in window)) {
+		  $('#recog-support').show();
+		} else {
+			window.SpeechRecognition;
+		}
+		
+		var computer = new Listener();
+
+        computer.setGrammars([$SCRIPT_ROOT + "/voice/numbers.grxml"]);
+
+		computer.onresult = function(e) {
+		    console.log("The nomatch event:", e);
+		}
+		computer.onresult = function(e) {
+            console.log("The onresult event:", e);
+            console.log("all results:", e.results);
+
+			if (e.results.length) {
+				var result = e.results[e.resultIndex];
+				console.log("last result:", result);
+				if (result.isFinal) {
+					// Protection from spoken response through speakers creating a cycle.
+					if (computer.isTalking) {
+						return false;
+					}
+
+                    var transcript = result[0].transcript;
+                    var confidence = result[0].confidence;
+                    var outContainer = $("#talk-out");
+
+                    confidence_level = '';
+                    if (confidence > 0.9) {
+                        confidence_level = ' alert-success';
+                    } else {
+                        if (confidence > 0.7) {
+                            confidence_level = ' alert-warning';
+                        } else {
+                            confidence_level = ' alert-danger';
+                        }
+                    }
+
+                    console.log(outContainer);
+
+                    outContainer.append(
+                        ['<div class="list-group-item'
+                        , confidence_level
+                        ,'"><span class="badge">'
+                        ,confidence.toFixed(2)
+                        ,'</span>'
+                        ,transcript
+                        ,'</div>'].join("")
+                    );
+				}
+			}
+		};
+
+		computer.onstart = function(e) {
+			// not implemented
+			console.log("onstart");
+			$("#record-button").children("span").addClass("red");
+		};
+
+		computer.onend = function(e) {
+			// not implemented
+			console.log("onend");
+			$("#record-button").children("span").removeClass("red");
+		};
+
+		$("#record-button").on('click', function(){
+			if (!computer.isListening) {
+				computer.start();
+			} else {
+				computer.stop();
+			}
+		});
+
+		$("#stop-button").on('click', function(){
+			if (computer.isListening) {
+				computer.stop();
+			}
+		});
+ 	});
+ 	</script>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div id="talk-out" class="list-group"></div>
+        </div>
+        <div class="panel-footer">
+            <div class="btn-group">
+                <button id="record-button" type="button" class="btn btn-default"><span class="glyphicon glyphicon-record"></span></button>
+                <button id="stop-button" type="button" class="btn btn-default"><span class="glyphicon glyphicon-stop"></span></button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
