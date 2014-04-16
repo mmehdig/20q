@@ -216,7 +216,7 @@ dict_of_questions['name'] = YesNoQuestion(question="Is {she} '%s'?", param="name
 
 
 # configuration
-DATABASE = 'flaskr.db'
+DATABASE = '20q_db_test.db'
 DEBUG = True
 SECRET_KEY = '4056000'
 USERNAME = 'admin'
